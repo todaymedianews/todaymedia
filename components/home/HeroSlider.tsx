@@ -170,8 +170,8 @@ export function HeroSlider({ articles }: HeroSliderProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent lg:hidden" />
 
                     {/* Decorative corner element */}
-                    <div className="absolute top-0 left-0 w-32 h-32 bg-[#c90000] opacity-20 rounded-br-full hidden lg:block"></div>
-                    <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-[#c90000]/30 to-transparent rounded-tl-full hidden lg:block"></div>
+                    {/* <div className="absolute top-0 left-0 w-32 h-32 bg-[#c90000] opacity-20 rounded-br-full hidden lg:block"></div> */}
+                    {/* <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-[#c90000]/30 to-transparent rounded-tl-full hidden lg:block"></div> */}
                   {/* </Link> */}
 
                   {/* Slider Controls - Desktop only, positioned at bottom left of image */}
