@@ -12,13 +12,37 @@ import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 const client = new ApolloClient({
   link: new HttpLink({
     uri: `${process.env.NEXT_PUBLIC_DB_URI}/graphql`,
-    fetch: (uri, options) => {
-      return fetch(uri, {
+    fetch: async (uri, options) => {
+      const response = await fetch(uri, {
         ...options,
         next: { 
           revalidate: false, // Static by default
           tags: ['wordpress'], // Tag all WordPress requests
         },
+      });
+
+      // Clone the response to read the body
+      const clonedResponse = response.clone();
+      let body = await clonedResponse.text();
+      
+      // Clean up any non-JSON prefixes that might be in the response
+      // This handles cases where the backend might add comments or whitespace
+      if (body.includes('// Start of Selection')) {
+        body = body.substring(body.indexOf('{'));
+      } else if (body.trim().startsWith('//')) {
+        // Remove any leading comment lines
+        const lines = body.split('\n');
+        const jsonStart = lines.findIndex(line => line.trim().startsWith('{'));
+        if (jsonStart > 0) {
+          body = lines.slice(jsonStart).join('\n');
+        }
+      }
+
+      // Return a new Response with the cleaned body
+      return new Response(body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers: response.headers,
       });
     },
   }),
