@@ -77,3 +77,18 @@ export const GET_HEAD_BODY_FOOTER_CODE = gql`
     }
   }
 `;
+
+export const GET_YOUTUBE_CHANNEL_BANNER = gql`
+  query GetYoutubeChannerBanner {
+    themeSettings {
+      themeOptionsFields {
+        youtubeChannelBanner {
+          node {
+            sourceUrl
+          }
+        }
+        youtubeChannelLink
+      }
+    }
+  }
+`;

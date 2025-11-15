@@ -1,9 +1,12 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { fetchVideoBySlug } from "@/lib/api/videos";
+import { fetchYoutubeChannelBanner } from "@/lib/api/theme-settings";
 import VideoPlayer from "@/components/video/VideoPlayer";
 import { generateVideoObjectSchema, generateBreadcrumbSchema } from "@/lib/schemas";
 import { siteConfig } from "@/lib/metadata";
+import Image from "next/image";
+import Link from "next/link";
 
 interface VideoPageProps {
   params: {
@@ -39,6 +42,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
   const { videoId } = await params;
   const videoSlug = decodeURIComponent(videoId);
   const video = await fetchVideoBySlug(videoSlug);
+  const channelBanner = await fetchYoutubeChannelBanner();
 
   if (!video) {
     notFound();
@@ -98,6 +102,27 @@ export default async function VideoPage({ params }: VideoPageProps) {
               />
             )}
           </div>
+
+          {/* YouTube Channel Banner */}
+          {channelBanner && channelBanner.youtubeChannelBanner?.node?.sourceUrl && channelBanner.youtubeChannelLink && (
+            <div className="mt-6">
+              <Link 
+                href={channelBanner.youtubeChannelLink} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="block relative w-full overflow-hidden rounded-lg hover:opacity-90 transition-opacity"
+              >
+                <Image
+                  src={channelBanner.youtubeChannelBanner.node.sourceUrl}
+                  alt="YouTube Channel Banner"
+                  width={1200}
+                  height={300}
+                  className="w-full h-auto object-cover"
+                  priority={false}
+                />
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </main>

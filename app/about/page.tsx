@@ -70,7 +70,7 @@ export default async function About() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 max-w-6xl mx-auto">
           <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-right">
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-start mb-4">
               <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
                 <VisionIcon className="w-8 h-8 text-[#c90000]" />
               </div>
@@ -84,7 +84,7 @@ export default async function About() {
           </div>
 
           <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md text-right">
-            <div className="flex justify-end mb-4">
+            <div className="flex justify-start mb-4">
               <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
                 <MissionIcon className="w-8 h-8 text-[#c90000]" />
               </div>
@@ -108,7 +108,7 @@ export default async function About() {
                 const ValueIcon = getIcon(value.ourValuesIconClass);
                 return (
                   <div key={index} className="text-right">
-                    <div className="flex justify-end mb-3">
+                    <div className="flex justify-start mb-3">
                       <div className="bg-red-100 dark:bg-red-900/30 p-2 rounded-full">
                         <ValueIcon className="w-6 h-6 text-[#c90000]" />
                       </div>
