@@ -7,6 +7,7 @@ interface ArticleCardWithAuthorProps {
   image: string;
   date: string;
   author: string;
+  authorImage?: string;
   categorySlug?: string;
   className?: string;
 }
@@ -17,6 +18,7 @@ export function ArticleCardWithAuthor({
   image,
   date,
   author,
+  authorImage,
   categorySlug = 'news',
   className = "",
 }: ArticleCardWithAuthorProps) {
@@ -42,9 +44,17 @@ export function ArticleCardWithAuthor({
                 {date}
               </p>
             </div>
-            <div className="w-10 h-10 bg-[#c90000] rounded-full flex items-center justify-center text-white shrink-0">
-              {author.charAt(0)}
-            </div>
+            {authorImage ? (
+              <ImageWithFallback
+                src={authorImage}
+                alt={author}
+                className="w-10 h-10 rounded-full object-cover shrink-0"
+              />
+            ) : (
+              <div className="w-10 h-10 bg-[#c90000] rounded-full flex items-center justify-center text-white shrink-0">
+                {author.charAt(0)}
+              </div>
+            )}
           </div>
         </div>
       </div>
