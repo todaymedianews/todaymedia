@@ -39,6 +39,12 @@ export function VideoSection({
     <div className={`${bgColor} py-12`}>
       <section className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
+          <h2 
+            className="text-2xl pb-2 border-b-4 inline-block text-right"
+            style={{ borderColor: color }}
+          >
+            {title || "فيديو"}
+          </h2>
           <Link
             href={ctaLink || "/video-category"}
             className="group flex items-center gap-2 bg-[#c90000] hover:bg-[#a00000] text-white px-5 py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg hover:scale-105"
@@ -46,12 +52,6 @@ export function VideoSection({
             <span className="font-medium">{ctaLabel || "عرض الكل"}</span>
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           </Link>
-          <h2 
-            className="text-2xl pb-2 border-b-4 inline-block text-right"
-            style={{ borderColor: color }}
-          >
-            {title || "فيديو"}
-          </h2>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.slice(0, 3).map((video) => (

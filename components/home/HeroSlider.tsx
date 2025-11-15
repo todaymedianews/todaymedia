@@ -64,7 +64,7 @@ export function HeroSlider({ articles }: HeroSliderProps) {
     <section className="container mx-auto px-2 lg:px-4 py-2 lg:py-8">
       <div className="relative">
         <div
-          className="relative overflow-hidden rounded-xl lg:rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 shadow-xl lg:shadow-2xl min-h-[700px] lg:h-[600px] mb-4 lg:mb-0"
+          className="relative overflow-hidden rounded-xl lg:rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 shadow-xl lg:shadow-2xl min-h-[650px] lg:h-[600px] mb-4 lg:mb-0"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -203,10 +203,10 @@ export function HeroSlider({ articles }: HeroSliderProps) {
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`transition-all min-h-11 min-w-11 h-11 flex items-center justify-center ${
+              className={`transition-all h-5 w-5 max-h-5 max-w-5 flex items-center justify-center ${
                 index === currentSlide
-                  ? "w-8 bg-[#c90000]"
-                  : "w-3 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
+                  ? "w-5 bg-[#c90000]"
+                  : "w-5 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400"
               } rounded-full`}
               aria-label={`Go to slide ${index + 1}`}
             />
