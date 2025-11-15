@@ -1,11 +1,10 @@
-import Link from "next/link";
-import Image from "next/image";
 import { MobileMenu } from "./header/MobileMenu";
 import { MobileSearch } from "./header/MobileSearch";
 import { SearchBar } from "./header/SearchBar";
 import { ThemeToggle } from "./header/ThemeToggle";
 import { StickyNav } from "./header/StickyNav";
 import { CurrentDate } from "./header/CurrentDate";
+import { LogoLink } from "./header/LogoLink";
 import { LogoData } from "@/lib/actions/site/logoAction";
 import { HeaderMenuData } from "@/lib/actions/site/headerMenuAction";
 import { fetchSocialLinksData } from "@/lib/actions/site/themeSettingsAction";
@@ -58,18 +57,10 @@ export default async function Header() {
           </div>
 
           {/* Logo centered */}
-          <Link href="/" className="flex items-center gap-3 absolute left-1/2 -translate-x-1/2 lg:relative lg:left-0 lg:translate-x-0 lg:flex-1 lg:justify-start">
-            <Image 
-              src={logoUrl} 
-              width={100} 
-              height={100} 
-              alt="اليوم ميديا" 
-              className="h-12 lg:h-16 w-auto object-contain" 
-              priority
-              fetchPriority="high"
-              quality={90}
-            />
-          </Link>
+          <LogoLink 
+            logoUrl={logoUrl}
+            className="desktop-logo flex items-center gap-3 absolute left-1/2 -translate-x-1/2 lg:relative lg:left-0 lg:translate-x-0 lg:flex-1 lg:justify-start"
+          />
 
           {/* Desktop: SearchBar on right, Mobile: Menu on right */}
           <div className="flex items-center lg:flex-1 lg:justify-end">

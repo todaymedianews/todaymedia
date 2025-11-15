@@ -2,39 +2,7 @@ import Link from "next/link";
 import { Clock, Eye, Play } from "lucide-react";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { Badge } from "@/components/ui/badge";
-
-// Helper function to calculate time ago
-const getTimeAgo = (dateString: string): string => {
-  if (!dateString) return '';
-  
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
-  if (diffInSeconds < 60) return 'الآن';
-  if (diffInSeconds < 3600) {
-    const minutes = Math.floor(diffInSeconds / 60);
-    return `منذ ${minutes} ${minutes === 1 ? 'دقيقة' : 'دقائق'}`;
-  }
-  if (diffInSeconds < 86400) {
-    const hours = Math.floor(diffInSeconds / 3600);
-    return `منذ ${hours} ${hours === 1 ? 'ساعة' : 'ساعات'}`;
-  }
-  if (diffInSeconds < 604800) {
-    const days = Math.floor(diffInSeconds / 86400);
-    return `منذ ${days} ${days === 1 ? 'يوم' : 'أيام'}`;
-  }
-  if (diffInSeconds < 2592000) {
-    const weeks = Math.floor(diffInSeconds / 604800);
-    return `منذ ${weeks} ${weeks === 1 ? 'أسبوع' : 'أسابيع'}`;
-  }
-  if (diffInSeconds < 31536000) {
-    const months = Math.floor(diffInSeconds / 2592000);
-    return `منذ ${months} ${months === 1 ? 'شهر' : 'أشهر'}`;
-  }
-  const years = Math.floor(diffInSeconds / 31536000);
-  return `منذ ${years} ${years === 1 ? 'سنة' : 'سنوات'}`;
-};
+import { TimeAgo } from "./TimeAgo";
 
 interface VideoCardProps {
   id: number;
@@ -100,7 +68,7 @@ export function VideoCard({
             {date && (
               <div className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                <span>{getTimeAgo(date)}</span>
+                <TimeAgo date={date} />
               </div>
             )}
           </div>

@@ -36,7 +36,8 @@ export default function GlobalLoader() {
       
       if (link && link.href && !link.href.startsWith('#') && !link.href.startsWith('mailto:') && !link.href.startsWith('tel:')) {
         const url = new URL(link.href);
-        if (url.origin === window.location.origin) {
+        // Only show loader if it's an internal link and going to a different page
+        if (url.origin === window.location.origin && url.pathname !== pathname) {
           setLoading(true);
         }
       }
@@ -44,7 +45,7 @@ export default function GlobalLoader() {
 
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
-  }, []);
+  }, [pathname]);
 
   // Don't show loader if not loading
   if (!loading && !isInitialLoad) return null;
