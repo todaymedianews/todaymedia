@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     console.log('📦 Webhook payload:', JSON.stringify(body, null, 2));
 
-    const { action, post_type, slug, post_id } = body;
+    const { action, post_type, slug, post_id, post_name } = body;
 
     // CRITICAL: Clear all WordPress data cache using path revalidation
     // This will clear Next.js fetch cache for all WordPress GraphQL requests
@@ -123,6 +123,32 @@ export async function POST(req: NextRequest) {
       revalidatePath('/');
       console.log('✅ Revalidated entire site (theme settings update)');
     }
+    else if (action === 'user_profile_update' && post_type === 'user_profile') {
+      // User profile update affects author pages and all articles by that author
+      console.log(`👤 User profile update detected for user: ${post_name || post_id}`);
+      
+      // Revalidate homepage (shows articles with author info)
+      revalidatePath('/');
+      console.log('✅ Revalidated homepage');
+      
+      // Revalidate all author pages
+      revalidatePath('/author/[id]', 'page');
+      console.log('✅ Revalidated all author pages');
+      
+      // Revalidate all article pages (they display author images)
+      revalidatePath('/[category]/[id]', 'page');
+      console.log('✅ Revalidated all article pages');
+      
+      // Revalidate all category pages (they list articles with author info)
+      revalidatePath('/category/[category]', 'page');
+      console.log('✅ Revalidated category pages');
+      
+      // Revalidate all tag pages (they list articles with author info)
+      revalidatePath('/tag/[tag]', 'page');
+      console.log('✅ Revalidated tag pages');
+      
+      console.log(`✅ User profile revalidation complete for: ${post_name || post_id}`);
+    }
     else {
       // Default: revalidate homepage and layout
       revalidatePath('/');
@@ -140,6 +166,7 @@ export async function POST(req: NextRequest) {
       post_type,
       slug,
       post_id,
+      post_name,
       duration_ms: duration,
       now: Date.now() 
     });
