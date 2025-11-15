@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { ChevronDown, ChevronLeft } from "lucide-react";
 
 type Category = {
@@ -13,6 +14,7 @@ type Category = {
 
 export function StickyNav({ categories, logoUrl }: { categories: Category[]; logoUrl: string }) {
   const [isNavSticky, setIsNavSticky] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +27,14 @@ export function StickyNav({ categories, logoUrl }: { categories: Category[]; log
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (pathname === "/") {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent GlobalLoader from triggering
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <nav
       className={`border-t border-border hidden lg:block bg-background transition-all duration-300 ${
@@ -35,6 +45,7 @@ export function StickyNav({ categories, logoUrl }: { categories: Category[]; log
         <div className="flex gap-8 justify-start items-center overflow-visible">
           <Link
             href="/"
+            onClick={handleLogoClick}
             className={`transition-all duration-300 ${
               isNavSticky ? "opacity-100 visible" : "opacity-0 invisible w-0"
             }`}
