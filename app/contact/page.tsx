@@ -111,7 +111,7 @@ export default async function ContactPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
             {/* Email Card */}
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-right">
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-start mb-4">
                 <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
                   <Mail className="w-6 h-6 text-[#c90000]" />
                 </div>
@@ -131,7 +131,7 @@ export default async function ContactPage() {
 
             {/* Phone Card */}
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-right">
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-start mb-4">
                 <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
                   <Phone className="w-6 h-6 text-[#c90000]" />
                 </div>
@@ -152,7 +152,7 @@ export default async function ContactPage() {
 
             {/* Address Card */}
             <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-right">
-              <div className="flex justify-end mb-4">
+              <div className="flex justify-start mb-4">
                 <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-full">
                   <MapPin className="w-6 h-6 text-[#c90000]" />
                 </div>

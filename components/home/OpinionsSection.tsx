@@ -7,6 +7,8 @@ interface Article {
   image: string;
   date: string;
   author: string;
+  authorImage?: string;
+  categorySlug?: string;
 }
 
 interface OpinionsSectionProps {

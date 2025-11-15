@@ -216,9 +216,17 @@ export default function ArticleContent({ article, previousArticle, nextArticle, 
           <Link href={`/author/${article.authorId || article.author}`} className="block">
             <div className="bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 p-4 md:p-8 rounded-lg mb-8 shadow-md hover:shadow-lg transition-all group">
               <div className="flex items-start gap-3 md:gap-6">
-                <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#c90000] to-[#a00000] rounded-full flex items-center justify-center text-white text-xl md:text-3xl shrink-0 shadow-lg">
-                  {article.author.charAt(0)}
-                </div>
+                {article.authorImage ? (
+                  <ImageWithFallback
+                    src={article.authorImage}
+                    alt={article.author}
+                    className="w-16 h-16 md:w-24 md:h-24 rounded-full object-cover shrink-0 shadow-lg"
+                  />
+                ) : (
+                  <div className="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-[#c90000] to-[#a00000] rounded-full flex items-center justify-center text-white text-xl md:text-3xl shrink-0 shadow-lg">
+                    {article.author.charAt(0)}
+                  </div>
+                )}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-lg md:text-xl group-hover:text-[#c90000] transition-colors">

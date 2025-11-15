@@ -8,6 +8,7 @@ import { LoadMoreButton } from '@/components/shared/LoadMoreButton';
 import { loadMoreAuthorArticles } from './actions';
 import { generatePersonSchema, generateBreadcrumbSchema, generateCollectionPageSchema } from '@/lib/schemas';
 import { siteConfig } from '@/lib/metadata';
+import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 
 interface PageProps {
   params: Promise<{ 
@@ -58,6 +59,7 @@ export default async function AuthorPage({ params }: PageProps) {
 
   // Get author info from first article
   const authorName = authorArticles[0]?.author || id;
+  const authorImage = authorArticles[0]?.authorImage;
   
   // Fetch total count of articles by this author
   const totalArticlesCount = await fetchAuthorArticlesCount(Number(id));
@@ -103,9 +105,17 @@ export default async function AuthorPage({ params }: PageProps) {
         {/* Author Profile */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-8 mb-8 border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-6 items-start">
-            <div className="w-32 h-32 bg-[#c90000] rounded-full flex items-center justify-center text-white text-5xl shrink-0">
-              {authorName.charAt(0)}
-            </div>
+            {authorImage ? (
+              <ImageWithFallback
+                src={authorImage}
+                alt={authorName}
+                className="w-32 h-32 rounded-full object-cover shrink-0 shadow-lg"
+              />
+            ) : (
+              <div className="w-32 h-32 bg-[#c90000] rounded-full flex items-center justify-center text-white text-5xl shrink-0">
+                {authorName.charAt(0)}
+              </div>
+            )}
             <div className="flex-1">
               <h1 className="text-3xl mb-2">{authorName}</h1>
               <p className="text-gray-600 dark:text-gray-400 mb-4">كاتب</p>

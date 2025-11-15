@@ -39,6 +39,13 @@ export const GET_ARTICLE = gql`
           name
           slug
           databaseId
+          userProfileImage {
+            profileImage {
+              node {
+                sourceUrl
+              }
+            }
+          }
         }
       }
       seoCustomOptions {
@@ -108,6 +115,13 @@ export const GET_ARTICLES = gql`
             name
             slug
             databaseId
+            userProfileImage {
+              profileImage {
+                node {
+                  sourceUrl
+                }
+              }
+            }
           }
         }
         seoCustomOptions {
@@ -179,6 +193,13 @@ export const GET_ARTICLES_BY_CATEGORY = gql`
             name
             slug
             databaseId
+            userProfileImage {
+              profileImage {
+                node {
+                  sourceUrl
+                }
+              }
+            }
           }
         }
         seoCustomOptions {
@@ -249,6 +270,13 @@ export const GET_ARTICLES_BY_TAG = gql`
             name
             slug
             databaseId
+            userProfileImage {
+              profileImage {
+                node {
+                  sourceUrl
+                }
+              }
+            }
           }
         }
         seoCustomOptions {
@@ -320,6 +348,13 @@ export const GET_ARTICLES_BY_AUTHOR = gql`
             name
             slug
             databaseId
+            userProfileImage {
+              profileImage {
+                node {
+                  sourceUrl
+                }
+              }
+            }
           }
         }
         seoCustomOptions {
@@ -390,6 +425,13 @@ export const GET_ARTICLES_BY_AUTHOR_ID = gql`
             name
             slug
             databaseId
+            userProfileImage {
+              profileImage {
+                node {
+                  sourceUrl
+                }
+              }
+            }
           }
         }
         seoCustomOptions {
