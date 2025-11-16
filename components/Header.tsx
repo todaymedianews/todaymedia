@@ -40,11 +40,11 @@ export default async function Header() {
     <header className="bg-background shadow-sm border-b border-border lg:static sticky top-0 z-50">
       <div className="bg-[#c90000] text-white py-2 lg:block hidden">
         <div className="container mx-auto px-4 flex justify-between items-center text-right">
-          <div className="flex gap-4 items-center">
-            <ThemeToggle />
-          </div>
           <div className="flex gap-4">
             <CurrentDate />
+          </div>
+          <div className="flex gap-4 items-center">
+            <ThemeToggle />
           </div>
         </div>
       </div>

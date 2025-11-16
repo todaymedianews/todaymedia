@@ -1,12 +1,21 @@
 import Link from "next/link";
 import {
   Facebook,
-  Twitter,
   Instagram,
   Youtube,
   Mail,
   Linkedin,
 } from "lucide-react";
+
+// Custom Twitter X SVG Component
+const TwitterX = ({ className }: { className?: string }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" className="bi bi-twitter-x" viewBox="0 0 16 16" id="Twitter-X--Streamline-Bootstrap" height="16" width="16">
+  <desc>
+    Twitter X Streamline Icon: https://streamlinehq.com
+  </desc>
+  <path d="M12.6 0.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867 -5.07 -4.425 5.07H0.316l5.733 -6.57L0 0.75h5.063l3.495 4.633L12.601 0.75Zm-0.86 13.028h1.36L4.323 2.145H2.865z" strokeWidth="1"></path>
+</svg>
+);
 
 interface FooterLink {
   href: string;
@@ -31,7 +40,7 @@ const getSocialIcon = (platform: string) => {
   const platformLower = platform.toLowerCase();
   
   if (platformLower.includes('facebook')) return Facebook;
-  if (platformLower.includes('twitter') || platformLower.includes('x')) return Twitter;
+  if (platformLower.includes('twitter') || platformLower.includes('x')) return TwitterX;
   if (platformLower.includes('instagram')) return Instagram;
   if (platformLower.includes('youtube')) return Youtube;
   if (platformLower.includes('linkedin')) return Linkedin;

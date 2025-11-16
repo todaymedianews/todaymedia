@@ -134,9 +134,9 @@ export default async function PrivacyPolicyPage() {
               const SectionIcon = getIcon(section.icon);
               return (
                 <div key={index} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md mb-6 text-right">
-                  <h2 className="text-2xl mb-4 text-gray-900 dark:text-white flex items-center justify-end gap-2">
+                  <h2 className="text-2xl mb-4 text-gray-900 dark:text-white flex items-center justify-start gap-2">
+                  <SectionIcon className="w-6 h-6 text-[#c90000]" />
                     <span>{section.title}</span>
-                    <SectionIcon className="w-6 h-6 text-[#c90000]" />
                   </h2>
                   <div 
                     className="space-y-4 text-gray-700 dark:text-gray-300 prose prose-lg dark:prose-invert max-w-none"
@@ -163,15 +163,15 @@ export default async function PrivacyPolicyPage() {
             <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 p-6 rounded-lg text-right">
               <div className="flex items-start justify-end gap-3">
                 <div className="flex-1">
-                  <h3 className="text-lg mb-2 text-gray-900 dark:text-white">
-                    {privacyData.important_note_title}
+                  <h3 className="text-lg mb-2 text-gray-900 dark:text-white flex items-center justify-start gap-2">
+                    <ImportantNoteIcon className="w-6 h-6 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
+                    <span>{privacyData.important_note_title}</span>
                   </h3>
                   <div 
                     className="text-sm text-gray-700 dark:text-gray-300 prose prose-sm dark:prose-invert max-w-none"
                     dangerouslySetInnerHTML={{ __html: privacyData.importantNoteDescription }}
                   />
                 </div>
-                <ImportantNoteIcon className="w-6 h-6 text-yellow-600 dark:text-yellow-500 flex-shrink-0" />
               </div>
             </div>
           </div>

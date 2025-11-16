@@ -33,6 +33,7 @@ export interface Article {
   authorId?: number;
   authorSlug?: string;
   authorImage?: string;
+  authorInfo?: string;
   readTime: string;
   tags?: Array<{
     name: string;

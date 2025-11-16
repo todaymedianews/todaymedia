@@ -1,4 +1,18 @@
-import { Facebook, Twitter, Instagram, Youtube, Mail, Linkedin } from "lucide-react";
+import { Facebook, Instagram, Youtube, Mail, Linkedin } from "lucide-react";
+
+// Custom Twitter X SVG Component
+const TwitterX = ({ className }: { className?: string }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    fill="currentColor" 
+    className={className}
+    viewBox="0 0 24 24" 
+    width="16" 
+    height="16"
+  >
+    <path d="M18.9 1.125h3.681l-8.040000000000001 9.213000000000001L24 22.875h-7.4055l-5.8004999999999995 -7.605 -6.637499999999999 7.605H0.474l8.599499999999999 -9.855L0 1.125h7.5945l5.2425 6.9495000000000005L18.901500000000002 1.125Zm-1.29 19.542h2.04L6.484500000000001 3.2175000000000002H4.2975z" strokeWidth="1.5"></path>
+  </svg>
+);
 
 interface SocialLink {
   platform: string;
@@ -19,7 +33,7 @@ const getSocialIconAndColor = (platform: string) => {
     return { Icon: Facebook, color: 'bg-[#1877f2]', label: 'تابعنا على فيسبوك' };
   }
   if (platformLower.includes('twitter') || platformLower.includes('x')) {
-    return { Icon: Twitter, color: 'bg-[#1da1f2]', label: 'تابعنا على تويتر' };
+    return { Icon: TwitterX, color: 'bg-black', label: 'تابعنا على تويتر' };
   }
   if (platformLower.includes('instagram')) {
     return { Icon: Instagram, color: 'bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045]', label: 'تابعنا على إنستغرام' };
