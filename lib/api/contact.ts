@@ -63,7 +63,7 @@ export async function submitContactForm(formData: {
   message: string;
 }, formId: string): Promise<{ success: boolean; message: string }> {
   try {
-    const wpApiUrl = process.env.NEXT_PUBLIC_DB_URI || 'https://biva.todaymedia.net';
+    const wpApiUrl = process.env.NEXT_PUBLIC_DB_URI || 'https://www.todaymedia.net';
     const endpoint = `${wpApiUrl}/wp-json/contact-form-7/v1/contact-forms/${formId}/feedback`;
 
     // Create FormData for CF7
