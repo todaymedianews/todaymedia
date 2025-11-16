@@ -45,7 +45,6 @@ export default function VideoPlayer({
 
   return (
     <>
-    Hello
     <div className="relative w-full aspect-video bg-black lg:rounded-lg overflow-hidden">
       {!isPlaying ? (
         // Thumbnail with play button

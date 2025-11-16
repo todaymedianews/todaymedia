@@ -72,6 +72,7 @@ export function transformPostToArticle(post: any): Article {
     authorId: post.author?.node?.databaseId,
     authorSlug: post.author?.node?.slug,
     authorImage: post.author?.node?.userProfileImage?.profileImage?.node?.sourceUrl,
+    authorInfo: post.author?.node?.userProfileImage?.authorInfo,
     readTime: calculateReadTime(post.content || ""),
     tags: post.tags?.nodes?.map((tag: any) => ({
       name: tag.name,

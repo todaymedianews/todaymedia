@@ -148,24 +148,32 @@ export function HeroSlider({ articles }: HeroSliderProps) {
                 </div>
 
                 {/* Image - 60% Right Side */}
-                <div className="lg:col-span-3 relative overflow-hidden order-1 lg:order-2 h-full min-h-[280px] lg:min-h-[550px]">
+                <div className="lg:col-span-3 relative overflow-hidden order-1 lg:order-2 h-full min-h-[280px] lg:min-h-[550px] bg-gray-200 dark:bg-gray-800">
                   {/* <Link
                     href={`/${article.categorySlug}/${article.id}`}
                     className="block h-full group"
                   > */}
-                    <Image
-                      src={article.image}
-                      alt={article.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 60vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      priority={index === 0}
-                      loading={index === 0 ? "eager" : "lazy"}
-                      quality={index === 0 ? 90 : 75}
-                      fetchPriority={index === 0 ? "high" : "low"}
-                      placeholder="blur"
-                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCNAFAAH//Z"
-                    />
+                    {article.image && article.image.trim() !== '' ? (
+                      <Image
+                        src={article.image}
+                        alt={article.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 60vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        priority={index === 0}
+                        loading={index === 0 ? "eager" : "lazy"}
+                        quality={index === 0 ? 90 : 75}
+                        fetchPriority={index === 0 ? "high" : "low"}
+                        placeholder="blur"
+                        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCNAFAAH//Z"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <svg className="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
                     {/* Subtle gradient overlay for better text readability on mobile */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent lg:hidden" />
 

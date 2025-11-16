@@ -7,7 +7,6 @@ import {
   User,
   Share2,
   Facebook,
-  Twitter,
   Printer,
   ChevronRight,
   ChevronLeft,
@@ -26,6 +25,20 @@ import {
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { Article } from "@/types/articles";
 import NewsCard from "@/components/NewsCard";
+
+// Custom Twitter X SVG Component
+const TwitterX = ({ className }: { className?: string }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    fill="currentColor" 
+    className={className}
+    viewBox="0 0 24 24" 
+    width="16" 
+    height="16"
+  >
+    <path d="M18.9 1.125h3.681l-8.040000000000001 9.213000000000001L24 22.875h-7.4055l-5.8004999999999995 -7.605 -6.637499999999999 7.605H0.474l8.599499999999999 -9.855L0 1.125h7.5945l5.2425 6.9495000000000005L18.901500000000002 1.125Zm-1.29 19.542h2.04L6.484500000000001 3.2175000000000002H4.2975z" strokeWidth="1.5"></path>
+  </svg>
+);
 
 interface ArticleContentProps {
   article: Article;
@@ -141,7 +154,7 @@ export default function ArticleContent({ article, previousArticle, nextArticle, 
               title="مشاركة على تويتر"
               aria-label="مشاركة على تويتر"
             >
-              <Twitter className="w-4 h-4 md:ml-2" />
+              <TwitterX className="w-4 h-4 md:ml-2" />
               <span className="hidden md:inline">تويتر</span>
             </Button>
             <Button 
@@ -236,10 +249,15 @@ export default function ArticleContent({ article, previousArticle, nextArticle, 
                       كاتب
                     </Badge>
                   </div>
-                  <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-2 md:mb-3">
-                    صحفي متخصص في {article.category}، يمتلك خبرة واسعة في تغطية
-                    الأحداث والتطورات في هذا المجال.
-                  </p>
+                  {article.authorInfo ? (
+                    <p className="article-info text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-2 md:mb-3">
+                      {article.authorInfo}
+                    </p>
+                  ) : (
+                    <p className="article-info text-xs md:text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-2 md:mb-3">
+                      اليوم ميديا موقعٌ إخباريّ عربيّ مستقلّ يقدّم محتوى موثوقًا يجمع بين سرعة الخبر وعمق التحليل
+                    </p>
+                  )}
                   <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-500 dark:text-gray-400">
                     <span>مقالات الكاتب</span>
                     <span>•</span>

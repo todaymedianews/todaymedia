@@ -7,6 +7,7 @@ import {
   GET_ARTICLES_BY_AUTHOR,
   GET_ARTICLES_BY_AUTHOR_ID,
   GET_AUTHOR_POST_COUNT,
+  GET_CATEGORY_BY_SLUG,
 } from "@/lib/queries/article/articleQuires";
 import {
   transformPostToArticle,
@@ -292,4 +293,58 @@ export async function fetchAllArticles(): Promise<Article[]> {
   }
 
   return allArticles;
+}
+
+/**
+ * Fetch category information by slug
+ */
+export async function fetchCategoryBySlug(slug: string): Promise<{
+  name: string;
+  slug: string;
+  count: number;
+  parent?: {
+    name: string;
+    slug: string;
+  };
+} | null> {
+  try {
+    const decodedSlug = decodeURIComponent(slug);
+    
+    const { data } = await apolloClient.query<{
+      category: {
+        id: string;
+        name: string;
+        slug: string;
+        count: number;
+        parent?: {
+          node: {
+            name: string;
+            slug: string;
+          };
+        };
+      };
+    }>({
+      query: GET_CATEGORY_BY_SLUG,
+      variables: { slug: decodedSlug },
+      fetchPolicy: 'network-only',
+    });
+
+    if (!data?.category) {
+      return null;
+    }
+
+    return {
+      name: data.category.name,
+      slug: data.category.slug,
+      count: data.category.count,
+      parent: data.category.parent ? {
+        name: data.category.parent.node.name,
+        slug: data.category.parent.node.slug,
+      } : undefined,
+    };
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    console.error("Category slug was:", slug);
+    return null;
+  }
 }

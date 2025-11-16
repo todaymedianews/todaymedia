@@ -45,6 +45,7 @@ export const GET_ARTICLE = gql`
                 sourceUrl
               }
             }
+            authorInfo
           }
         }
       }
@@ -121,6 +122,7 @@ export const GET_ARTICLES = gql`
                   sourceUrl
                 }
               }
+              authorInfo
             }
           }
         }
@@ -199,6 +201,7 @@ export const GET_ARTICLES_BY_CATEGORY = gql`
                   sourceUrl
                 }
               }
+              authorInfo
             }
           }
         }
@@ -276,6 +279,7 @@ export const GET_ARTICLES_BY_TAG = gql`
                   sourceUrl
                 }
               }
+              authorInfo
             }
           }
         }
@@ -354,6 +358,7 @@ export const GET_ARTICLES_BY_AUTHOR = gql`
                   sourceUrl
                 }
               }
+              authorInfo
             }
           }
         }
@@ -431,6 +436,7 @@ export const GET_ARTICLES_BY_AUTHOR_ID = gql`
                   sourceUrl
                 }
               }
+              authorInfo
             }
           }
         }
@@ -462,5 +468,22 @@ export const GET_ARTICLES_BY_AUTHOR_ID = gql`
 export const GET_AUTHOR_POST_COUNT = gql`
   query GetAuthorPostCount($authorId: Int!) {
     authorPostCount(authorId: $authorId)
+  }
+`;
+
+export const GET_CATEGORY_BY_SLUG = gql`
+  query GetCategoryBySlug($slug: ID!) {
+    category(id: $slug, idType: SLUG) {
+      id
+      name
+      slug
+      count
+      parent {
+        node {
+          name
+          slug
+        }
+      }
+    }
   }
 `;
