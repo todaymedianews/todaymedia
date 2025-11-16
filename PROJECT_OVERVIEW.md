@@ -65,7 +65,7 @@ The project connects to WordPress via **GraphQL API** using Apollo Client:
 
 - **GraphQL Endpoint**: `${NEXT_PUBLIC_DB_URI}/graphql`
 - **Environment Variable**: `NEXT_PUBLIC_DB_URI` (WordPress site URL)
-- **Example**: `http://todaymediabackend.local` or `https://biva.todaymedia.net`
+- **Example**: `http://todaymediabackend.local` or `https://www.todaymedia.net`
 
 ### **Data Flow**
 

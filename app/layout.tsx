@@ -50,8 +50,8 @@ export default async function RootLayout({
     <html lang="ar" dir="rtl" className={tajawal.className} suppressHydrationWarning>
       <head>
         {/* Preconnect to WordPress CDN for faster image loading (critical for LCP) */}
-        <link rel="preconnect" href="https://biva.todaymedia.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://biva.todaymedia.net" />
+        <link rel="preconnect" href="https://www.todaymedia.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.todaymedia.net" />
       </head>
       <body suppressHydrationWarning>
         {/* Inject headTagCode (client-side injection for scripts/meta tags) */}
