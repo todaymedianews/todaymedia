@@ -29,8 +29,8 @@ export function HeroSlider({ articles }: HeroSliderProps) {
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
   
-  // Limit to 3 slides for better performance
-  const displayArticles = articles.slice(0, 3);
+  // Display 5 latest articles in hero slider
+  const displayArticles = articles.slice(0, 5);
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % displayArticles.length);

@@ -120,3 +120,27 @@ export const GET_ALL_VIDEOS_FOR_SITEMAP = gql`
   }
 `;
 
+/**
+ * GraphQL query to fetch latest posts for news sitemap
+ * Fetches the latest 200 posts ordered by date
+ */
+export const GET_LATEST_POSTS_FOR_NEWS_SITEMAP = gql`
+  query GetLatestPostsForNewsSitemap {
+    posts(first: 200, where: { orderby: { field: DATE, order: DESC }, status: PUBLISH }) {
+      nodes {
+        id
+        databaseId
+        title
+        slug
+        date
+        modified
+        categories {
+          nodes {
+            slug
+          }
+        }
+      }
+    }
+  }
+`;
+
