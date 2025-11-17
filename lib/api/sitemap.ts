@@ -6,6 +6,7 @@ import {
   GET_ALL_TAGS_FOR_SITEMAP,
   GET_ALL_AUTHORS_FOR_SITEMAP,
   GET_ALL_VIDEOS_FOR_SITEMAP,
+  GET_LATEST_POSTS_FOR_NEWS_SITEMAP,
 } from "@/lib/queries/site/sitemapQueries";
 
 interface SitemapPost {
@@ -47,6 +48,20 @@ interface SitemapVideo {
   slug: string;
   date: string;
   modified?: string | null;
+}
+
+interface NewsPost {
+  id: string;
+  databaseId: number;
+  title: string;
+  slug: string;
+  date: string;
+  modified: string;
+  categories: {
+    nodes: Array<{
+      slug: string;
+    }>;
+  };
 }
 
 type PostsQueryResponse = {
@@ -305,5 +320,40 @@ export async function fetchAllVideosForSitemap(): Promise<SitemapVideo[]> {
   }
 
   return allVideos;
+}
+
+type NewsPostsQueryResponse = {
+  posts: {
+    nodes: NewsPost[];
+  };
+};
+
+/**
+ * Fetch latest posts for news sitemap (last 2 days)
+ */
+export async function fetchLatestPostsForNewsSitemap(): Promise<NewsPost[]> {
+  try {
+    const result = await apolloClient.query<NewsPostsQueryResponse>({
+      query: GET_LATEST_POSTS_FOR_NEWS_SITEMAP,
+      fetchPolicy: 'network-only',
+    });
+    const data = result.data as NewsPostsQueryResponse;
+
+    if (data?.posts?.nodes) {
+      // Filter posts from the last 2 days
+      const twoDaysAgo = new Date();
+      twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
+      return data.posts.nodes.filter((post) => {
+        const postDate = new Date(post.date);
+        return postDate >= twoDaysAgo;
+      });
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Error fetching latest posts for news sitemap:", error);
+    return [];
+  }
 }
 
