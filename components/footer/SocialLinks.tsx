@@ -6,6 +6,7 @@ import {
   Mail,
   Linkedin,
 } from "lucide-react";
+import WhatsappIcon from "../ui/whatsapp";
 
 // Custom Twitter X SVG Component
 const TwitterX = ({ className }: { className?: string }) => (
@@ -87,6 +88,15 @@ export function SocialLinks({ heading = "تابعنا", socialLinks = [], aboutL
     <div className="text-right">
       <h4 className="mb-4">{heading}</h4>
       <div className="flex gap-3 justify-start mb-6">
+        <a
+          href="https://wa.me/00971553686104"
+          className="bg-gray-800 w-11 h-11 min-w-11 min-h-11 rounded-full hover:bg-red-600 transition-colors flex items-center justify-center"
+          aria-label="تابعنا على واتساب"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+         <WhatsappIcon className="w-5 h-5" />
+        </a>
         {displayLinks.map((link) => {
           // Skip invalid links
           if (!link || !link.platform || !link.url) return null;
