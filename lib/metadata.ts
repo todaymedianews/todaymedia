@@ -63,6 +63,7 @@ export function generateHomeMetadata(seoData?: SEOData): Metadata {
   // Use WordPress SEO data if available, otherwise use defaults
   const title = seoData?.seoTitle || 'الرئيسية';
   const description = seoData?.metaDescription || 'تابع آخر الأخبار والتطورات في الشرق الأوسط والعالم على منصة اليوم ميديا';
+  const keywords = seoData?.focusKeyword || ['أخبار', 'الشرق الأوسط', 'سياسة', 'اقتصاد', 'رياضة', 'تكنولوجيا'];
   const ogTitle = seoData?.ogTitle || `الرئيسية | ${siteConfig.name}`;
   const ogDescription = seoData?.ogDescription || description;
   const canonicalUrl = seoData?.canonicalUrl || siteConfig.url;
@@ -72,6 +73,7 @@ export function generateHomeMetadata(seoData?: SEOData): Metadata {
   const metadata: Metadata = {
     title,
     description,
+    keywords,
     alternates: {
       canonical: canonicalUrl,
     },
@@ -99,7 +101,6 @@ export function generateHomeMetadata(seoData?: SEOData): Metadata {
   if (twitterImage) {
     metadata.twitter!.images = [twitterImage];
   }
-
   return metadata;
 }
 
