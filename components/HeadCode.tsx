@@ -7,115 +7,203 @@ interface HeadCodeProps {
 }
 
 /**
- * Component to inject HTML code into the document head
- * Uses useEffect to inject scripts, meta tags, and other elements after component mounts
- * This is necessary because Next.js App Router doesn't allow arbitrary HTML in the <head> tag
+ * Optimized component to inject HTML code into the document head
+ * Performance optimizations:
+ * - Batch DOM queries to reduce reflows
+ * - Use Maps for O(1) duplicate checking
+ * - Batch DOM appends using document fragments
+ * - Execute non-critical scripts with requestIdleCallback
  */
 export function HeadCode({ code }: HeadCodeProps) {
   useEffect(() => {
-    if (!code) return;
+    if (!code || typeof document === 'undefined') return;
 
-    // Create a temporary container to parse the HTML
-    // Using a document fragment approach to preserve structure
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = code;
+    // Use requestIdleCallback for non-blocking execution (fallback to setTimeout)
+    const scheduleExecution = (callback: () => void) => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(callback, { timeout: 2000 });
+      } else {
+        setTimeout(callback, 0);
+      }
+    };
 
-    // Extract and inject scripts (must be done first for proper execution order)
-    const scripts = Array.from(tempDiv.querySelectorAll('script'));
-    scripts.forEach((script) => {
-      // Check if script already exists to avoid duplicates
-      const existingScript = document.querySelector(
-        `script[src="${script.getAttribute('src')}"]`
-      );
-      if (existingScript) return;
+    scheduleExecution(() => {
+      // Create a temporary container to parse the HTML (single DOM operation)
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = code;
 
-      const newScript = document.createElement('script');
-      
-      // Copy all attributes
-      Array.from(script.attributes).forEach((attr) => {
-        newScript.setAttribute(attr.name, attr.value);
+      // Batch query all existing elements once (instead of per-element queries)
+      const existingScripts = document.head.querySelectorAll('script');
+      const existingMetas = document.head.querySelectorAll('meta');
+      const existingLinks = document.head.querySelectorAll('link');
+      const existingStyles = document.head.querySelectorAll('style');
+
+      // Build lookup maps for O(1) duplicate checking
+      const scriptIds = new Set<string>();
+      const scriptSrcs = new Set<string>();
+      existingScripts.forEach((script) => {
+        const id = script.getAttribute('id');
+        const src = script.getAttribute('src');
+        if (id) scriptIds.add(id);
+        if (src) scriptSrcs.add(src);
       });
-      
-      // Copy innerHTML/textContent
-      if (script.innerHTML) {
-        newScript.innerHTML = script.innerHTML;
-      } else if (script.textContent) {
-        newScript.textContent = script.textContent;
-      }
-      
-      // Append to head
-      document.head.appendChild(newScript);
-    });
 
-    // Extract and inject meta tags
-    const metaTags = Array.from(tempDiv.querySelectorAll('meta'));
-    metaTags.forEach((meta) => {
-      // Check if meta tag already exists
-      const name = meta.getAttribute('name');
-      const property = meta.getAttribute('property');
-      const httpEquiv = meta.getAttribute('http-equiv');
-      
-      let existingMeta: Element | null = null;
-      if (name) {
-        existingMeta = document.querySelector(`meta[name="${name}"]`);
-      } else if (property) {
-        existingMeta = document.querySelector(`meta[property="${property}"]`);
-      } else if (httpEquiv) {
-        existingMeta = document.querySelector(`meta[http-equiv="${httpEquiv}"]`);
-      }
-      
-      if (existingMeta) {
-        // Update existing meta tag
-        Array.from(meta.attributes).forEach((attr) => {
-          existingMeta!.setAttribute(attr.name, attr.value);
-        });
-        return;
-      }
-
-      const newMeta = document.createElement('meta');
-      Array.from(meta.attributes).forEach((attr) => {
-        newMeta.setAttribute(attr.name, attr.value);
+      const metaKeys = new Map<string, Element>();
+      existingMetas.forEach((meta) => {
+        const name = meta.getAttribute('name');
+        const property = meta.getAttribute('property');
+        const httpEquiv = meta.getAttribute('http-equiv');
+        if (name) metaKeys.set(`name:${name}`, meta);
+        if (property) metaKeys.set(`property:${property}`, meta);
+        if (httpEquiv) metaKeys.set(`http-equiv:${httpEquiv}`, meta);
       });
-      document.head.appendChild(newMeta);
-    });
 
-    // Extract and inject link tags
-    const linkTags = Array.from(tempDiv.querySelectorAll('link'));
-    linkTags.forEach((link) => {
-      const href = link.getAttribute('href');
-      const rel = link.getAttribute('rel');
-      
-      // Check if link already exists
-      if (href && rel) {
-        const existingLink = document.querySelector(`link[href="${href}"][rel="${rel}"]`);
-        if (existingLink) return;
-      }
-
-      const newLink = document.createElement('link');
-      Array.from(link.attributes).forEach((attr) => {
-        newLink.setAttribute(attr.name, attr.value);
+      const linkKeys = new Set<string>();
+      existingLinks.forEach((link) => {
+        const href = link.getAttribute('href');
+        const rel = link.getAttribute('rel');
+        if (href && rel) linkKeys.add(`${href}:${rel}`);
       });
-      document.head.appendChild(newLink);
-    });
 
-    // Extract and inject style tags
-    const styleTags = Array.from(tempDiv.querySelectorAll('style'));
-    styleTags.forEach((style) => {
-      const newStyle = document.createElement('style');
-      if (style.innerHTML) {
-        newStyle.innerHTML = style.innerHTML;
-      } else if (style.textContent) {
-        newStyle.textContent = style.textContent;
+      // Process scripts (critical - execute immediately)
+      const scripts = Array.from(tempDiv.querySelectorAll('script'));
+      const scriptsToAdd: HTMLScriptElement[] = [];
+
+      scripts.forEach((script) => {
+        const scriptId = script.getAttribute('id');
+        const scriptSrc = script.getAttribute('src');
+        
+        // Fast O(1) duplicate check using Set
+        if (scriptId && scriptIds.has(scriptId)) return;
+        if (scriptSrc && scriptSrcs.has(scriptSrc)) return;
+
+        // Mark as processed to avoid duplicates in same batch
+        if (scriptId) scriptIds.add(scriptId);
+        if (scriptSrc) scriptSrcs.add(scriptSrc);
+
+        const newScript = document.createElement('script');
+        
+        // Copy attributes efficiently
+        const attrs = script.attributes;
+        for (let i = 0; i < attrs.length; i++) {
+          const attr = attrs[i];
+          if (attr.name === 'async') {
+            newScript.async = true;
+          } else if (attr.name === 'defer') {
+            newScript.defer = true;
+          } else if (attr.name === 'crossorigin' || attr.name === 'crossOrigin') {
+            newScript.crossOrigin = attr.value || 'anonymous';
+          } else {
+            newScript.setAttribute(attr.name, attr.value);
+          }
+        }
+        
+        // Handle inline scripts
+        if (script.innerHTML || script.textContent) {
+          newScript.textContent = script.innerHTML || script.textContent || '';
+        }
+        
+        scriptsToAdd.push(newScript);
+      });
+
+      // Batch append scripts (scripts must execute in order, so append individually)
+      scriptsToAdd.forEach((script) => {
+        document.head.appendChild(script);
+      });
+
+      // Process meta tags (batch append)
+      const metaTags = Array.from(tempDiv.querySelectorAll('meta'));
+      const metasToAdd: HTMLMetaElement[] = [];
+
+      metaTags.forEach((meta) => {
+        const name = meta.getAttribute('name');
+        const property = meta.getAttribute('property');
+        const httpEquiv = meta.getAttribute('http-equiv');
+        
+        let existingMeta: Element | null = null;
+        if (name) {
+          existingMeta = metaKeys.get(`name:${name}`) || null;
+        } else if (property) {
+          existingMeta = metaKeys.get(`property:${property}`) || null;
+        } else if (httpEquiv) {
+          existingMeta = metaKeys.get(`http-equiv:${httpEquiv}`) || null;
+        }
+        
+        if (existingMeta) {
+          // Update existing meta tag
+          const attrs = meta.attributes;
+          for (let i = 0; i < attrs.length; i++) {
+            existingMeta.setAttribute(attrs[i].name, attrs[i].value);
+          }
+          return;
+        }
+
+        const newMeta = document.createElement('meta');
+        const attrs = meta.attributes;
+        for (let i = 0; i < attrs.length; i++) {
+          newMeta.setAttribute(attrs[i].name, attrs[i].value);
+        }
+        metasToAdd.push(newMeta);
+      });
+
+      // Batch append meta tags using fragment
+      if (metasToAdd.length > 0) {
+        const metaFragment = document.createDocumentFragment();
+        metasToAdd.forEach((meta) => metaFragment.appendChild(meta));
+        document.head.appendChild(metaFragment);
       }
-      document.head.appendChild(newStyle);
+
+      // Process link tags (batch append)
+      const linkTags = Array.from(tempDiv.querySelectorAll('link'));
+      const linksToAdd: HTMLLinkElement[] = [];
+
+      linkTags.forEach((link) => {
+        const href = link.getAttribute('href');
+        const rel = link.getAttribute('rel');
+        
+        if (href && rel) {
+          if (linkKeys.has(`${href}:${rel}`)) return;
+          linkKeys.add(`${href}:${rel}`);
+        }
+
+        const newLink = document.createElement('link');
+        const attrs = link.attributes;
+        for (let i = 0; i < attrs.length; i++) {
+          newLink.setAttribute(attrs[i].name, attrs[i].value);
+        }
+        linksToAdd.push(newLink);
+      });
+
+      // Batch append link tags using fragment
+      if (linksToAdd.length > 0) {
+        const linkFragment = document.createDocumentFragment();
+        linksToAdd.forEach((link) => linkFragment.appendChild(link));
+        document.head.appendChild(linkFragment);
+      }
+
+      // Process style tags (batch append)
+      const styleTags = Array.from(tempDiv.querySelectorAll('style'));
+      const stylesToAdd: HTMLStyleElement[] = [];
+
+      styleTags.forEach((style) => {
+        const newStyle = document.createElement('style');
+        if (style.innerHTML) {
+          newStyle.innerHTML = style.innerHTML;
+        } else if (style.textContent) {
+          newStyle.textContent = style.textContent;
+        }
+        stylesToAdd.push(newStyle);
+      });
+
+      // Batch append style tags using fragment
+      if (stylesToAdd.length > 0) {
+        const styleFragment = document.createDocumentFragment();
+        stylesToAdd.forEach((style) => styleFragment.appendChild(style));
+        document.head.appendChild(styleFragment);
+      }
     });
-
-    // Handle HTML comments (for tracking/analytics comments)
-    // Comments are preserved in the original code but won't be injected separately
-    // They're typically part of script tags or meta tags
-
   }, [code]);
 
-  return null; // This component doesn't render anything
+  return null;
 }
 
