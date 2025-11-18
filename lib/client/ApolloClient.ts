@@ -69,6 +69,12 @@ const client = new ApolloClient({
           return mergeObjects(existing, incoming);
         },
       },
+      Slider: {
+        keyFields: false,
+        merge(existing, incoming, { mergeObjects }) {
+          return mergeObjects(existing, incoming);
+        },
+      },
     },
   }),
   // CRITICAL: Use network-only to bypass Apollo's cache

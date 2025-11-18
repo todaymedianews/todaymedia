@@ -1,6 +1,7 @@
 import apolloClient from '@/lib/client/ApolloClient';
 import { GET_HOME_PAGE } from '@/lib/queries/site/homeQueries';
 import { fetchArticlesByCategory, fetchArticles, fetchArticlesByIds } from '@/lib/api/articles';
+import { fetchHomePageSliderPostIds } from './sliderActions';
 
 export interface HomeSection {
   enableCta: boolean;
@@ -23,7 +24,6 @@ export interface VideoSectionConfig {
 export interface HomePageData {
   sections: HomeSection[];
   videoSection: VideoSectionConfig | null;
-  heroSliderPostIds: number[];
 }
 
 /**
@@ -34,11 +34,6 @@ export async function fetchHomePageConfig(): Promise<HomePageData> {
     const { data } = await apolloClient.query<{
       page: {
         homePageOptions: {
-          selectPostsForSlider?: {
-            nodes: Array<{
-              postId: number;
-            }>;
-          };
           homePageContent: Array<{
             enableCta: boolean;
             enableExcerpt: boolean;
@@ -64,14 +59,11 @@ export async function fetchHomePageConfig(): Promise<HomePageData> {
     });
 
     if (!data?.page?.homePageOptions?.homePageContent) {
-      return { sections: [], videoSection: null, heroSliderPostIds: [] };
+      return { sections: [], videoSection: null };
     }
 
     const content = data.page.homePageOptions.homePageContent;
     const homePageOptions = data.page.homePageOptions;
-
-    // Extract hero slider post IDs
-    const heroSliderPostIds = homePageOptions.selectPostsForSlider?.nodes?.map(node => node.postId) || [];
 
     // Extract video section config from homePageOptions level
     const videoSection: VideoSectionConfig | null = {
@@ -96,11 +88,10 @@ export async function fetchHomePageConfig(): Promise<HomePageData> {
     return {
       sections,
       videoSection,
-      heroSliderPostIds,
     };
   } catch (error) {
     console.error('Error fetching home page config:', error);
-    return { sections: [], videoSection: null, heroSliderPostIds: [] };
+    return { sections: [], videoSection: null };
   }
 }
 
@@ -109,13 +100,16 @@ export async function fetchHomePageConfig(): Promise<HomePageData> {
  */
 export async function fetchHomePageArticles(config: HomePageData) {
   try {
-    // Fetch hero articles first - Use specific posts if configured, otherwise latest 5 posts
+    // Fetch hero slider post IDs from the slider query
+    const heroSliderPostIds = await fetchHomePageSliderPostIds();
+    
+    // Fetch hero articles - Use slider posts if configured, otherwise latest 5 posts
     let heroArticles;
-    if (config.heroSliderPostIds && config.heroSliderPostIds.length > 0) {
+    if (heroSliderPostIds && heroSliderPostIds.length > 0) {
       // Fetch specific posts by IDs for hero slider
-      heroArticles = await fetchArticlesByIds(config.heroSliderPostIds);
+      heroArticles = await fetchArticlesByIds(heroSliderPostIds);
     } else {
-      // Fallback to latest 5 posts if no specific posts are configured
+      // Fallback to latest 5 posts if no slider posts are configured
       const latestArticles = await fetchArticles(5);
       heroArticles = latestArticles.articles;
     }

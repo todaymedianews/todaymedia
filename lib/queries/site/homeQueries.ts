@@ -30,13 +30,6 @@ export const GET_HOME_PAGE = gql`
         }
       }
       homePageOptions {
-        selectPostsForSlider {
-          nodes {
-            ... on Post {
-              postId
-            }
-          }
-        }
         homePageContent {
           enableCta
           enableExcerpt
