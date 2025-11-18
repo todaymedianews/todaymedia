@@ -19,6 +19,7 @@ export interface VideoSectionConfig {
   sectionTitleUndelineColorVideos: string;
   ctaLabelVideos: string | null;
   ctaLinkVideos: string | null;
+  hideThisSection: boolean;
 }
 
 export interface HomePageData {
@@ -52,6 +53,7 @@ export async function fetchHomePageConfig(): Promise<HomePageData> {
           sectionTitleUndelineColorVideos: string;
           ctaLabelVideos: string | null;
           ctaLinkVideos: string | null;
+          hideThisSection: boolean;
         };
       };
     }>({
@@ -71,6 +73,7 @@ export async function fetchHomePageConfig(): Promise<HomePageData> {
       sectionTitleUndelineColorVideos: homePageOptions.sectionTitleUndelineColorVideos,
       ctaLabelVideos: homePageOptions.ctaLabelVideos,
       ctaLinkVideos: homePageOptions.ctaLinkVideos,
+      hideThisSection: homePageOptions.hideThisSection || false,
     };
 
     // Map all sections from WordPress
