@@ -109,32 +109,7 @@ export async function fetchHomePageConfig(): Promise<HomePageData> {
  */
 export async function fetchHomePageArticles(config: HomePageData) {
   try {
-    // Fetch articles for each section in parallel
-    const sectionPromises = config.sections.map(async (section) => {
-      // For sections with multiple categories, fetch from all and combine
-      if (section.categories.length > 1) {
-        const articlePromises = section.categories.map(cat => 
-          fetchArticlesByCategory(cat, 4)
-        );
-        const results = await Promise.all(articlePromises);
-        const allArticles = results.flatMap(r => r.articles);
-        // Sort by date and limit to 8
-        return allArticles
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-          .slice(0, 8);
-      } else if (section.categories.length === 1) {
-        // Single category
-        const { articles } = await fetchArticlesByCategory(
-          section.categories[0],
-          section.enableExcerpt ? 4 : 8
-        );
-        return articles;
-      } else {
-        return [];
-      }
-    });
-
-    // Fetch hero articles - Use specific posts if configured, otherwise latest 5 posts
+    // Fetch hero articles first - Use specific posts if configured, otherwise latest 5 posts
     let heroArticles;
     if (config.heroSliderPostIds && config.heroSliderPostIds.length > 0) {
       // Fetch specific posts by IDs for hero slider
@@ -144,6 +119,38 @@ export async function fetchHomePageArticles(config: HomePageData) {
       const latestArticles = await fetchArticles(5);
       heroArticles = latestArticles.articles;
     }
+
+    // Get hero post IDs to exclude from sections
+    const heroPostIds = new Set(heroArticles.map(article => article.id));
+
+    // Fetch articles for each section in parallel
+    const sectionPromises = config.sections.map(async (section) => {
+      // For sections with multiple categories, fetch from all and combine
+      if (section.categories.length > 1) {
+        const articlePromises = section.categories.map(cat => 
+          fetchArticlesByCategory(cat, 6) // Fetch more to account for filtered posts
+        );
+        const results = await Promise.all(articlePromises);
+        const allArticles = results.flatMap(r => r.articles);
+        // Sort by date, exclude hero posts, and limit to 8
+        return allArticles
+          .filter(article => !heroPostIds.has(article.id))
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 8);
+      } else if (section.categories.length === 1) {
+        // Single category - fetch more to account for filtered posts
+        const { articles } = await fetchArticlesByCategory(
+          section.categories[0],
+          section.enableExcerpt ? 6 : 12
+        );
+        // Exclude hero posts and limit to required amount
+        return articles
+          .filter(article => !heroPostIds.has(article.id))
+          .slice(0, section.enableExcerpt ? 4 : 8);
+      } else {
+        return [];
+      }
+    });
 
     const sectionArticles = await Promise.all(sectionPromises);
 
