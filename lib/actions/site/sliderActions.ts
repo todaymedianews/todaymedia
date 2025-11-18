@@ -29,13 +29,11 @@ export async function fetchHomePageSliderPostIds(): Promise<number[]> {
 
     // Check if data exists and has the expected structure
     if (!result.data?.slider?.homePageSlider?.homePageSlider?.nodes) {
-      console.warn('No slider data found or data structure is unexpected');
       return [];
     }
 
     // Extract post IDs from the response
     const postIds = result.data.slider.homePageSlider.homePageSlider.nodes.map(node => node.postId);
-    console.log('Fetched slider post IDs:', postIds);
     return postIds;
   } catch (error) {
     console.error('Error fetching home page slider post IDs:', error);
