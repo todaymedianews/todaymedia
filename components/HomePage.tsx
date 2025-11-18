@@ -44,19 +44,6 @@ export default async function Home() {
   const adBanners = await fetchHomePageAdBanners();
   
 
-  // Extract individual section articles
-  const section1 = sectionArticles[0] || [];
-  const section2 = sectionArticles[1] || [];
-  const section3 = sectionArticles[2] || [];
-  const section4 = sectionArticles[3] || [];
-  const section5 = sectionArticles[4] || [];
-  const section6 = sectionArticles[5] || [];
-  const section7 = sectionArticles[6] || [];
-  const section8 = sectionArticles[7] || [];
-  const section9 = sectionArticles[8] || [];
-  const section10 = sectionArticles[9] || [];
-  const section11 = sectionArticles[10] || [];
-
   // Get section configurations
   const sections = config.sections;
 
@@ -85,6 +72,77 @@ export default async function Home() {
     return undefined;
   };
 
+  // Helper function to get background color based on index
+  const getBgColor = (index: number): string => {
+    // Alternate between bg-background and bg-muted/20
+    return index % 2 === 0 ? 'bg-background' : 'bg-muted/20';
+  };
+
+  // Helper function to get ad banner for section
+  const getAdBanner = (sectionNumber: number) => {
+    const bannerKey = `homePageAdBanner${sectionNumber}` as keyof typeof adBanners;
+    return adBanners?.[bannerKey];
+  };
+
+  // Helper function to render section based on configuration
+  const renderSection = (section: typeof sections[0], articles: typeof sectionArticles[0], index: number) => {
+    const sectionNumber = index + 1;
+    const bgColor = getBgColor(index);
+    const color = section.sectionTitleUndelineColor || "#ea580c";
+    const categoryLink = getCategoryLink(section);
+    const title = section.sectionTitle || "";
+    const adBanner = getAdBanner(sectionNumber);
+
+    // Don't render if no articles
+    if (!articles || articles.length === 0) {
+      return null;
+    }
+
+    // Render based on section type
+    if (section.enableCta) {
+      return (
+        <OpinionsSection 
+          key={`section-${index}`}
+          articles={articles} 
+          bgColor={bgColor}
+          title={title || undefined}
+          color={color}
+          categoryLink={categoryLink}
+          sectionNumber={sectionNumber}
+          adBanner={adBanner}
+        />
+      );
+    } else if (section.enableExcerpt) {
+      return (
+        <HorizontalSection
+          key={`section-${index}`}
+          title={title}
+          articles={articles}
+          color={color}
+          bgColor={bgColor}
+          categoryLink={categoryLink}
+          sectionNumber={sectionNumber}
+          adBanner={adBanner}
+        />
+      );
+    } else {
+      return (
+        <GridSection
+          key={`section-${index}`}
+          title={title}
+          articles={articles}
+          color={color}
+          columns={getColumns(section.sectionColumnLayout)}
+          showExcerpt={section.enableExcerpt}
+          bgColor={bgColor}
+          sectionNumber={sectionNumber}
+          adBanner={adBanner}
+          categoryLink={categoryLink}
+        />
+      );
+    }
+  };
+
   return (
     <div className="min-h-screen">
       {/* Breaking News Bar - Client Component */}
@@ -102,301 +160,23 @@ export default async function Home() {
         <HeroSlider articles={heroArticles} />
 
         <div className="gridholder mx-auto px-4 py-8">
-          {/* Section 1 */}
-          {sections[0] && section1.length > 0 && (
-            sections[0].enableCta ? (
-              <OpinionsSection 
-                articles={section1} 
-                bgColor="bg-background"
-                title={sections[0].sectionTitle || undefined}
-                color={sections[0].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[0])}
-              />
-            ) : sections[0].enableExcerpt ? (
-              <HorizontalSection
-                title={sections[0].sectionTitle || ""}
-                articles={section1}
-                color={sections[0].sectionTitleUndelineColor || "#ea580c"}
-                bgColor="bg-background"
-                categoryLink={getCategoryLink(sections[0])}
-              />
-            ) : (
-              <GridSection
-                title={sections[0].sectionTitle || ""}
-                articles={section1}
-                color={sections[0].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[0].sectionColumnLayout)}
-                showExcerpt={sections[0].enableExcerpt}
-                bgColor="bg-background"
-                sectionNumber={1}
-                adBanner={adBanners?.homePageAdBanner1}
-                categoryLink={getCategoryLink(sections[0])}
-              />
-            )
-          )}
-
-          {/* Section 2 */}
-          {sections[1] && section2.length > 0 && (
-            sections[1].enableCta ? (
-              <OpinionsSection 
-                articles={section2} 
-                bgColor="bg-muted/20"
-                title={sections[1].sectionTitle || undefined}
-                color={sections[1].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[1])}
-              />
-            ) : sections[1].enableExcerpt ? (
-              <HorizontalSection
-                title={sections[1].sectionTitle || ""}
-                articles={section2}
-                color={sections[1].sectionTitleUndelineColor || "#ea580c"}
-                bgColor="bg-muted/20"
-                categoryLink={getCategoryLink(sections[1])}
-              />
-            ) : (
-              <GridSection
-                title={sections[1].sectionTitle || ""}
-                articles={section2}
-                color={sections[1].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[1].sectionColumnLayout)}
-                showExcerpt={sections[1].enableExcerpt}
-                bgColor="bg-muted/20"
-                sectionNumber={2}
-                adBanner={adBanners?.homePageAdBanner2}
-                categoryLink={getCategoryLink(sections[1])}
-              />
-            )
-          )}
-
-          {/* Section 3 */}
-          {sections[2] && section3.length > 0 && (
-            sections[2].enableCta ? (
-              <OpinionsSection 
-                articles={section3} 
-                bgColor="bg-background"
-                title={sections[2].sectionTitle || undefined}
-                color={sections[2].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[2])}
-              />
-            ) : (
-              <GridSection
-                title={sections[2].sectionTitle || ""}
-                articles={section3}
-                color={sections[2].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[2].sectionColumnLayout)}
-                showExcerpt={sections[2].enableExcerpt}
-                bgColor="bg-background"
-                sectionNumber={3}
-                adBanner={adBanners?.homePageAdBanner3}
-                categoryLink={getCategoryLink(sections[2])}
-              />
-            )
-          )}
-
-          {/* Section 4 */}
-          {sections[3] && section4.length > 0 && (
-            sections[3].enableCta ? (
-              <OpinionsSection 
-                articles={section4} 
-                bgColor="bg-muted/20"
-                title={sections[3].sectionTitle || undefined}
-                color={sections[3].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[3])}
-              />
-            ) : (
-              <GridSection
-                title={sections[3].sectionTitle || ""}
-                articles={section4}
-                color={sections[3].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[3].sectionColumnLayout)}
-                showExcerpt={sections[3].enableExcerpt}
-                bgColor="bg-muted/20"
-                sectionNumber={4}
-                adBanner={adBanners?.homePageAdBanner4}
-                categoryLink={getCategoryLink(sections[3])}
-              />
-            )
-          )}
-
-          {/* Section 5 */}
-          {sections[4] && section5.length > 0 && (
-            sections[4].enableCta ? (
-              <OpinionsSection 
-                articles={section5} 
-                bgColor="bg-background"
-                title={sections[4].sectionTitle || undefined}
-                color={sections[4].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[4])}
-              />
-            ) : (
-              <GridSection
-                title={sections[4].sectionTitle || ""}
-                articles={section5}
-                color={sections[4].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[4].sectionColumnLayout)}
-                showExcerpt={sections[4].enableExcerpt}
-                bgColor="bg-background"
-                sectionNumber={5}
-                adBanner={adBanners?.homePageAdBanner5}
-                categoryLink={getCategoryLink(sections[4])}
-              />
-            )
-          )}
-
-          {/* Section 6 */}
-          {sections[5] && section6.length > 0 && (
-            sections[5].enableCta ? (
-              <OpinionsSection 
-                articles={section6} 
-                bgColor="bg-muted/20"
-                title={sections[5].sectionTitle || undefined}
-                color={sections[5].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[5])}
-              />
-            )  : (
-              <GridSection
-                title={sections[5].sectionTitle || ""}
-                articles={section6}
-                color={sections[5].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[5].sectionColumnLayout)}
-                showExcerpt={sections[5].enableExcerpt}
-                bgColor="bg-muted/20"
-                sectionNumber={6}
-                adBanner={adBanners?.homePageAdBanner6}
-                categoryLink={getCategoryLink(sections[5])}
-              />
-            )
-          )}
-
-          {/* Section 7 */}
-          {sections[6] && section7.length > 0 && (
-            sections[6].enableCta ? (
-              <OpinionsSection 
-                articles={section7} 
-                bgColor="bg-background"
-                title={sections[6].sectionTitle || undefined}
-                color={sections[6].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[6])}
-              />
-            ) : (
-              <GridSection
-                title={sections[6].sectionTitle || ""}
-                articles={section7}
-                color={sections[6].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[6].sectionColumnLayout)}
-                showExcerpt={sections[6].enableExcerpt}
-                bgColor="bg-background"
-                sectionNumber={7}
-                adBanner={adBanners?.homePageAdBanner7}
-                categoryLink={getCategoryLink(sections[6])}
-              />
-            )
-          )}
-
-          {/* Section 8 */}
-          {sections[7] && section8.length > 0 && (
-            sections[7].enableCta ? (
-              <OpinionsSection 
-                articles={section8} 
-                bgColor="bg-muted/20"
-                title={sections[7].sectionTitle || undefined}
-                color={sections[7].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[7])}
-              />
-            ) : sections[7].enableExcerpt ? (
-              <HorizontalSection
-                title={sections[7].sectionTitle || ""}
-                articles={section8}
-                color={sections[7].sectionTitleUndelineColor || "#ea580c"}
-                bgColor="bg-muted/20"
-                categoryLink={getCategoryLink(sections[7])}
-              />
-            ) : (
-              <GridSection
-                title={sections[7].sectionTitle || ""}
-                articles={section8}
-                color={sections[7].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[7].sectionColumnLayout)}
-                showExcerpt={sections[7].enableExcerpt}
-                bgColor="bg-muted/20"
-                sectionNumber={8}
-                adBanner={adBanners?.homePageAdBanner8}
-                categoryLink={getCategoryLink(sections[7])}
-              />
-            )
-          )}
-
-          {/* Section 9 */}
-          {sections[8] && section9.length > 0 && (
-              <HorizontalSection
-                title={sections[8].sectionTitle || ""}
-                articles={section9}
-                color={sections[8].sectionTitleUndelineColor || "#ea580c"}
-                bgColor="bg-background"
-                categoryLink={getCategoryLink(sections[8])}
-              />
-          )}
-
-
-          {/* Section 10 */}
-          {sections[9] && section10.length > 0 && (
-            sections[9].enableCta ? (
-              <OpinionsSection 
-                articles={section10} 
-                bgColor="bg-muted/20"
-                title={sections[9].sectionTitle || undefined}
-                color={sections[9].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[9])}
-              />
-            ) :(
-              <GridSection
-                title={sections[9].sectionTitle || ""}
-                articles={section10}
-                color={sections[9].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[9].sectionColumnLayout)}
-                showExcerpt={sections[9].enableExcerpt}
-                bgColor="bg-muted/20"
-                sectionNumber={10}
-                adBanner={adBanners?.homePageAdBanner10}
-                categoryLink={getCategoryLink(sections[9])}
-              />
-            )
-          )}
-
-          {/* Section 11 */}
-          {sections[10] && section11.length > 0 && (
-            sections[10].enableCta ? (
-              <OpinionsSection 
-                articles={section11} 
-                bgColor="bg-background"
-                title={sections[10].sectionTitle || undefined}
-                color={sections[10].sectionTitleUndelineColor || "#ea580c"}
-                categoryLink={getCategoryLink(sections[10])}
-              />
-            ) : (
-              <GridSection
-                title={sections[10].sectionTitle || ""}
-                articles={section11}
-                color={sections[10].sectionTitleUndelineColor || "#ea580c"}
-                columns={getColumns(sections[10].sectionColumnLayout)}
-                showExcerpt={sections[10].enableExcerpt}
-                bgColor="bg-background"
-                sectionNumber={11}
-                adBanner={adBanners?.homePageAdBanner11}
-                categoryLink={getCategoryLink(sections[10])}
-              />
-            )
-          )}
+          {/* Dynamic Sections - Render all sections from WordPress */}
+          {sections.map((section, index) => {
+            const articles = sectionArticles[index] || [];
+            return renderSection(section, articles, index);
+          })}
 
           {/* Videos Section */}
-          <VideoSection 
-            videos={videos} 
-            bgColor="bg-muted/20"
-            title={config.videoSection?.sectionTitleVideos}
-            color={config.videoSection?.sectionTitleUndelineColorVideos || "#c90000"}
-            ctaLabel={config.videoSection?.ctaLabelVideos}
-            ctaLink={config.videoSection?.ctaLinkVideos}
-          />
+          {!config.videoSection?.hideThisSection && (
+            <VideoSection 
+              videos={videos} 
+              bgColor="bg-muted/20"
+              title={config.videoSection?.sectionTitleVideos}
+              color={config.videoSection?.sectionTitleUndelineColorVideos || "#c90000"}
+              ctaLabel={config.videoSection?.ctaLabelVideos}
+              ctaLink={config.videoSection?.ctaLinkVideos}
+            />
+          )}
         </div>
       </main>
     </div>

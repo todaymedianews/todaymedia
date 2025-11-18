@@ -1,5 +1,6 @@
 import { SectionHeader } from "@/components/shared/SectionHeader";
 import { ArticleCard } from "@/components/shared/ArticleCard";
+import { cleanAdBanner } from "@/lib/utils/cleanAdBanner";
 
 interface Article {
   id: number;
@@ -39,33 +40,8 @@ export function GridSection({
     columns === 3 ? "md:grid-cols-3" : 
     "sm:grid-cols-2 lg:grid-cols-4";
 
-  // Clean and convert AMP HTML to regular HTML
-  const cleanAdBanner = adBanner 
-    ? adBanner
-        .trim()
-        // Replace line breaks with spaces
-        .replace(/\r\n/g, ' ')
-        .replace(/\n/g, ' ')
-        // Normalize whitespace
-        .replace(/\s+/g, ' ')
-        // Convert AMP img to regular img
-        .replace(/<amp-img\s+/gi, '<img ')
-        .replace(/<\/amp-img>/gi, '')
-        // Remove AMP-specific attributes
-        .replace(/\s+layout=["']responsive["']\s*/gi, ' ')
-        .replace(/\s+layout=["']intrinsic["']\s*/gi, ' ')
-        .replace(/\s+layout=["']fixed["']\s*/gi, ' ')
-        // Ensure img tag is properly closed
-        .replace(/<img([^>]*?)(?:\s*\/)?>/gi, (match, attrs) => {
-          // Remove layout attribute if still present
-          attrs = attrs.replace(/\s+layout=["'][^"']*["']/gi, '');
-          // Ensure self-closing
-          if (!match.endsWith('/>') && !match.endsWith('>')) {
-            return `<img${attrs} />`;
-          }
-          return `<img${attrs} />`;
-        })
-    : null;
+  // Clean ad banner HTML
+  const cleanedAdBanner = cleanAdBanner(adBanner);
 
   return (
     <>
@@ -83,11 +59,20 @@ export function GridSection({
           </div>
         </section>
       </div>
-      {cleanAdBanner && (
+      {cleanedAdBanner && (
         <div 
-          className="container mx-auto px-4 py-4 flex justify-center"
-          dangerouslySetInnerHTML={{ __html: cleanAdBanner }}
-        />
+          className="container mx-auto px-4 py-4 flex justify-center items-center"
+          style={{ minHeight: 'auto' }}
+        >
+          <div 
+            className="ad-banner-wrapper w-full flex justify-center"
+            dangerouslySetInnerHTML={{ __html: cleanedAdBanner }}
+            style={{ 
+              maxWidth: '100%',
+              overflow: 'hidden'
+            }}
+          />
+        </div>
       )}
     </>
   );

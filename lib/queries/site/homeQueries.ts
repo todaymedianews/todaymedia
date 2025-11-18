@@ -48,6 +48,7 @@ export const GET_HOME_PAGE = gql`
         sectionTitleUndelineColorVideos
         ctaLabelVideos
         ctaLinkVideos
+        hideThisSection
       }
     }
   }

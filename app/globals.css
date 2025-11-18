@@ -238,3 +238,43 @@ html {
   max-width: 100%;
   margin-bottom: 20px;
 }
+
+/* Ad Banner Styles - Ensure inline CSS and styles render properly */
+.ad-banner-wrapper {
+  /* Allow ad banners to maintain their own styling */
+  line-height: normal;
+}
+
+.ad-banner-wrapper * {
+  /* Preserve inline styles and CSS from ad code */
+  box-sizing: border-box;
+}
+
+.ad-banner-wrapper img {
+  /* Ensure ad images display properly */
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.ad-banner-wrapper a {
+  /* Preserve link styling in ads */
+  text-decoration: none;
+}
+
+.ad-banner-wrapper iframe {
+  /* Ensure ad iframes display properly */
+  max-width: 100%;
+  border: none;
+}
+
+/* Preserve inline styles and CSS classes in ad banners */
+.ad-banner-wrapper [style] {
+  /* Don't override inline styles */
+  all: revert;
+}
+
+/* Center align ads that have text-align inline */
+.ad-banner-wrapper [style*="text-align"] {
+  display: block;
+}
