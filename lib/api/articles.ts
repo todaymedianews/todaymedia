@@ -8,6 +8,7 @@ import {
   GET_ARTICLES_BY_AUTHOR_ID,
   GET_AUTHOR_POST_COUNT,
   GET_CATEGORY_BY_SLUG,
+  GET_POSTS_BY_IDS,
 } from "@/lib/queries/article/articleQuires";
 import {
   transformPostToArticle,
@@ -293,6 +294,45 @@ export async function fetchAllArticles(): Promise<Article[]> {
   }
 
   return allArticles;
+}
+
+/**
+ * Fetch multiple articles by their IDs
+ */
+export async function fetchArticlesByIds(ids: number[]): Promise<Article[]> {
+  try {
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+
+    const { data } = await apolloClient.query<{
+      posts: {
+        nodes: any[];
+      };
+    }>({
+      query: GET_POSTS_BY_IDS,
+      variables: { ids },
+      fetchPolicy: 'network-only',
+    });
+
+    if (!data?.posts?.nodes) {
+      return [];
+    }
+
+    // Transform and maintain the order of IDs passed
+    const articlesMap = new Map(
+      transformPostsToArticles(data.posts.nodes).map(article => [article.id, article])
+    );
+
+    // Return articles in the same order as the input IDs
+    return ids
+      .map(id => articlesMap.get(id))
+      .filter((article): article is Article => article !== undefined);
+  } catch (error) {
+    console.error("Error fetching articles by IDs:", error);
+    console.error("IDs were:", ids);
+    return [];
+  }
 }
 
 /**

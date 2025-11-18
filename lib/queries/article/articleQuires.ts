@@ -487,3 +487,77 @@ export const GET_CATEGORY_BY_SLUG = gql`
     }
   }
 `;
+
+export const GET_POSTS_BY_IDS = gql`
+  query GetPostsByIds($ids: [ID!]!) {
+    posts(where: { in: $ids }, first: 100) {
+      nodes {
+        id
+        databaseId
+        title
+        excerpt
+        content
+        date
+        slug
+        link
+        featuredImage {
+          node {
+            sourceUrl
+            altText
+            mediaDetails {
+              width
+              height
+            }
+          }
+        }
+        categories {
+          nodes {
+            name
+            slug
+          }
+        }
+        tags {
+          nodes {
+            name
+            slug
+          }
+        }
+        author {
+          node {
+            name
+            slug
+            databaseId
+            userProfileImage {
+              profileImage {
+                node {
+                  sourceUrl
+                }
+              }
+              authorInfo
+            }
+          }
+        }
+        seoCustomOptions {
+          seoTitle
+          metaDescription
+          focusKeyword
+          canonicalUrl
+          ogTitle
+          ogDescription
+          ogImage {
+            node {
+              sourceUrl
+            }
+          }
+          twitterTitle
+          twitterDescription
+          twitterImage {
+            node {
+              sourceUrl
+            }
+          }
+        }
+      }
+    }
+  }
+`;
